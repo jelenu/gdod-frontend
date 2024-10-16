@@ -1,12 +1,12 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { Pressable, Text, StyleSheet } from 'react-native';
 
 const DiceButton = ({ onPress }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.button}>
+    <Pressable onPress={onPress} style={styles.button}>
       {/* Button text indicating the action to be taken */}
-      <Text style={styles.buttonText}>Girar dado</Text> {/* "Roll Dice" in Spanish */}
-    </TouchableOpacity>
+      <Text style={styles.buttonText}>Girar dado</Text>
+    </Pressable>
   );
 };
 
