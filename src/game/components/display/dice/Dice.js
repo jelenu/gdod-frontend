@@ -1,72 +1,89 @@
+// Importing necessary React and React Native modules
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet } from 'react-native';
+// Importing Canvas and related controls from Three.js and React Three Fiber
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
+// Importing the RotatingDice component for rendering the dice
 import RotatingDice from './RotatingDice';
+// Importing the custom hook to access the game context
 import { useGameContext } from '../../../context/GameContext';
 
+// Dice functional component representing a 3D dice
 const Dice = ({ spinning, selectable, playerId, turn }) => {
+  // Destructuring functions from the game context for adding/removing selected dice and accessing round info
   const { addSelectedDice, removeSelectedDice, round } = useGameContext();
 
-  const [selected, setSelected] = useState(false); // Estado para determinar si el dado está seleccionado
-  const [finalFace, setFinalFace] = useState(null); // Estado para rastrear la cara final
-  const isTouching = useRef(false); // Ref para rastrear si se está tocando
+  // State to determine if the dice is selected
+  const [selected, setSelected] = useState(false); 
+  // State to track the final face of the dice
+  const [finalFace, setFinalFace] = useState(null); 
+  // Ref to track if a touch event is ongoing
+  const isTouching = useRef(false); 
 
+  // Function to handle dice click events
   const handleClick = (e) => {
-    if (selectable) { // Solo cambia el estado si selectable es true
-      e.preventDefault(); // Prevenir comportamientos por defecto si es necesario
-      setSelected((prev) => !prev); // Cambia el estado al hacer clic
+    if (selectable) { // Only proceed if the dice is selectable
+      e.preventDefault(); // Prevent default actions if necessary
+      setSelected((prev) => !prev); // Toggle the selected state
+      // Add or remove the dice based on the current selection state
       if (selected) {
-        removeSelectedDice(playerId, finalFace);
+        removeSelectedDice(playerId, finalFace); // Remove dice if it was previously selected
       } else {
-        addSelectedDice(playerId, finalFace);
+        addSelectedDice(playerId, finalFace); // Add dice if it is newly selected
       }
     }
   };
 
+  // Function to handle touch start events
   const handleTouchStart = (e) => {
-    isTouching.current = true; // Marca que se está tocando
-    handleClick(e); // Llama a la función handleClick
+    isTouching.current = true; // Mark that a touch interaction has started
+    handleClick(e); // Call the click handler
   };
 
+  // Function to handle touch end events
   const handleTouchEnd = (e) => {
-    isTouching.current = false; // Restablece la referencia
+    isTouching.current = false; // Reset the touch state
   };
 
+  // Effect to reset the selected state when the turn changes
   useEffect(() => {
     setSelected(false);
   }, [turn]);
 
+  // Effect to automatically add the selected dice when the round is 3 and finalFace is set
   useEffect(() => {
     if (round === 3 && finalFace !== null) {
-      addSelectedDice(playerId, finalFace); // Añadir automáticamente cuando round es 3 y finalFace no es null
+      addSelectedDice(playerId, finalFace); // Automatically add the final face to the selected dice
     }
   }, [finalFace]);
 
   return (
+    // Canvas component to render 3D content
     <Canvas
       style={styles.canvas}
       onClick={(e) => {
-        // Solo manejar click si no se está tocando
+        // Only handle click if not currently touching
         if (!isTouching.current) {
           handleClick(e);
         }
       }}
-      onTouchStart={handleTouchStart} // Cambiado a onTouchStart
-      onTouchEnd={handleTouchEnd} // Añadido onTouchEnd para restablecer
+      onTouchStart={handleTouchStart} // Handler for touch start events
+      onTouchEnd={handleTouchEnd} // Handler for touch end events to reset touch state
       onPointerOver={(e) => {
-        e.stopPropagation(); // Evita que el evento se propague
+        e.stopPropagation(); // Prevent the event from bubbling up
         if (selectable) {
-          document.body.style.cursor = 'pointer'; // Cambia el cursor
+          document.body.style.cursor = 'pointer'; // Change cursor style to pointer when hovering
         }
       }}
       onPointerOut={(e) => {
-        e.stopPropagation(); // Evita que el evento se propague
-        document.body.style.cursor = 'auto'; // Restaura el cursor original
+        e.stopPropagation(); // Prevent the event from bubbling up
+        document.body.style.cursor = 'auto'; // Reset cursor style to default
       }}
     >
-      <OrbitControls enableRotate={false} enableZoom={false} />
-      <ambientLight intensity={5} />
+      <OrbitControls enableRotate={false} enableZoom={false} /> {/* Controls for camera movement */}
+      <ambientLight intensity={5} /> {/* Ambient light for better visibility of the dice */}
+      {/* RotatingDice component that visually represents the dice */}
       <RotatingDice 
         spinning={spinning} 
         selected={selected} 
@@ -77,14 +94,16 @@ const Dice = ({ spinning, selectable, playerId, turn }) => {
   );
 };
 
+// Styles for the Dice component using StyleSheet
 const styles = StyleSheet.create({
   canvas: {
-    display: 'block',
-    margin: 0,
-    padding: 0,
-    width: 100,
-    height: 100,
+    display: 'block', // Ensures block display for the canvas
+    margin: 0, // Removes default margin
+    padding: 0, // Removes default padding
+    width: 100, // Set width of the canvas
+    height: 100, // Set height of the canvas
   },
 });
 
+// Exporting the Dice component to be used in other parts of the app
 export default Dice;

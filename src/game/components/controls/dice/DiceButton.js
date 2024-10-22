@@ -1,25 +1,31 @@
+// Importing necessary React and React Native modules
 import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
 
+// DiceButton functional component representing a button for rolling dice
 const DiceButton = ({ onPress }) => {
   return (
+    // Pressable component that triggers the onPress function when pressed
     <Pressable onPress={onPress} style={styles.button}>
+      {/* Displaying the button text */}
       <Text style={styles.buttonText}>Girar dado</Text>
     </Pressable>
   );
 };
 
+// Styles for the DiceButton component using StyleSheet
 const styles = StyleSheet.create({
   button: {
-    marginBottom: 10,
-    padding: 10,
-    backgroundColor: '#2196F3',
-    borderRadius: 5,
+    marginBottom: 10, // Margin below the button for spacing
+    padding: 10, // Padding inside the button
+    backgroundColor: '#2196F3', // Background color of the button
+    borderRadius: 5, // Rounded corners for the button
   },
   buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
+    color: '#FFFFFF', // Text color of the button
+    fontSize: 16, // Font size of the button text
   },
 });
 
+// Exporting the DiceButton component to be used in other parts of the app
 export default DiceButton;
