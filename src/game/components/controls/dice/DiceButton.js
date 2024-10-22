@@ -4,7 +4,6 @@ import { Pressable, Text, StyleSheet } from 'react-native';
 const DiceButton = ({ onPress }) => {
   return (
     <Pressable onPress={onPress} style={styles.button}>
-      {/* Button text indicating the action to be taken */}
       <Text style={styles.buttonText}>Girar dado</Text>
     </Pressable>
   );
