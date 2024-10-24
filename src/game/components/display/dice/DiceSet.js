@@ -43,7 +43,6 @@ const DiceSet = ({ player, turn }) => {
     const diceCount = 6 - player.selectedDice.length; // Calculate how many dice can still be rolled
     if(diceCount === 0 && turn === player.id){
       endTurn();
-      console.log("skip turn")
     }else{
       setInitialDiceArray([...Array(diceCount)]); // Create an array of the available dice
       setVisibleButton(true); // Reset the visibility of the spin button

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image } from "react-native";
 
 const SelectedDice = ({ player, turn }) => {
-  const [selectedDice, setSelectedDice] = useState(player.selectedDice); // Estado para almacenar los dados seleccionados
+  const [selectedDice, setSelectedDice] = useState(player.selectedDice); // State to store selected dice
 
-  // Función para obtener la imagen según el valor del dado
+  // Function to get the image based on the die value
   const getDiceImage = (dieValue) => {
     switch (dieValue) {
       case 0:
@@ -17,13 +17,15 @@ const SelectedDice = ({ player, turn }) => {
         return require('../../../../../assets/dice/shield_face.png');
       case 4:
         return require('../../../../../assets/dice/steal_face.png');
+      default:
+        return null; // Return null for unsupported die values
     }
   };
 
-  // Actualiza los dados seleccionados solo cuando el turno cambie
+  // Updates the selected dice only when the turn changes
   useEffect(() => {
     setSelectedDice(player.selectedDice);
-  }, [turn]); // Se ejecuta solo cuando el turno cambia
+  }, [turn]); // Executes only when the turn changes
 
   return (
     <View style={styles.container}>
@@ -31,7 +33,7 @@ const SelectedDice = ({ player, turn }) => {
         <Image
           key={index}
           style={styles.image}
-          source={getDiceImage(die)} // Selecciona la imagen correspondiente al valor del dado
+          source={getDiceImage(die.number)} // Selects the corresponding image for the die value
         />
       ))}
     </View>

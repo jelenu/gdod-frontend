@@ -1,13 +1,13 @@
 // Importing necessary React and React Native modules
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useState, useEffect, useRef } from "react";
+import { StyleSheet } from "react-native";
 // Importing Canvas and related controls from Three.js and React Three Fiber
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 // Importing the RotatingDice component for rendering the dice
-import RotatingDice from './RotatingDice';
+import RotatingDice from "./RotatingDice";
 // Importing the custom hook to access the game context
-import { useGameContext } from '../../../context/GameContext';
+import { useGameContext } from "../../../context/GameContext";
 
 // Dice functional component representing a 3D dice
 const Dice = ({ spinning, selectable, playerId, turn }) => {
@@ -15,22 +15,37 @@ const Dice = ({ spinning, selectable, playerId, turn }) => {
   const { addSelectedDice, removeSelectedDice, round } = useGameContext();
 
   // State to determine if the dice is selected
-  const [selected, setSelected] = useState(false); 
+  const [selected, setSelected] = useState(false);
   // State to track the final face of the dice
-  const [finalFace, setFinalFace] = useState(null); 
+  const [finalFace, setFinalFace] = useState(null);
   // Ref to track if a touch event is ongoing
-  const isTouching = useRef(false); 
+  const isTouching = useRef(false);
 
+    // State to hold the random gold textures
+    const [randomGoldTextures, setRandomGoldTextures] = useState([]);
+
+  // Effect to generate random gold textures when the component mounts
+  useEffect(() => {
+    const textures = Array.from({ length: 5 }, () => Math.random() > 0.5);
+    setRandomGoldTextures(textures);
+  }, []); // Empty dependency array ensures this runs only on mount
+  
   // Function to handle dice click events
   const handleClick = (e) => {
-    if (selectable) { // Only proceed if the dice is selectable
+    if (selectable) {
+      // Only proceed if the dice is selectable
       e.preventDefault(); // Prevent default actions if necessary
       setSelected((prev) => !prev); // Toggle the selected state
       // Add or remove the dice based on the current selection state
       if (selected) {
-        removeSelectedDice(playerId, finalFace); // Remove dice if it was previously selected
+        removeSelectedDice(playerId, finalFace, randomGoldTextures[finalFace]); // Remove dice if it was previously selected
       } else {
-        addSelectedDice(playerId, finalFace); // Add dice if it is newly selected
+        addSelectedDice(playerId, finalFace, randomGoldTextures[finalFace]); // Add dice if it is newly selected
+        console.log(
+          finalFace,
+          randomGoldTextures[finalFace],
+          randomGoldTextures
+        );
       }
     }
   };
@@ -54,7 +69,7 @@ const Dice = ({ spinning, selectable, playerId, turn }) => {
   // Effect to automatically add the selected dice when the round is 3 and finalFace is set
   useEffect(() => {
     if (round === 3 && finalFace !== null) {
-      addSelectedDice(playerId, finalFace); // Automatically add the final face to the selected dice
+      addSelectedDice(playerId, finalFace, randomGoldTextures[finalFace]); // Automatically add the final face to the selected dice
     }
   }, [finalFace]);
 
@@ -73,22 +88,25 @@ const Dice = ({ spinning, selectable, playerId, turn }) => {
       onPointerOver={(e) => {
         e.stopPropagation(); // Prevent the event from bubbling up
         if (selectable) {
-          document.body.style.cursor = 'pointer'; // Change cursor style to pointer when hovering
+          document.body.style.cursor = "pointer"; // Change cursor style to pointer when hovering
         }
       }}
       onPointerOut={(e) => {
         e.stopPropagation(); // Prevent the event from bubbling up
-        document.body.style.cursor = 'auto'; // Reset cursor style to default
+        document.body.style.cursor = "auto"; // Reset cursor style to default
       }}
     >
-      <OrbitControls enableRotate={false} enableZoom={false} /> {/* Controls for camera movement */}
-      <ambientLight intensity={5} /> {/* Ambient light for better visibility of the dice */}
+      <OrbitControls enableRotate={false} enableZoom={false} />{" "}
+      {/* Controls for camera movement */}
+      <ambientLight intensity={5} />{" "}
+      {/* Ambient light for better visibility of the dice */}
       {/* RotatingDice component that visually represents the dice */}
-      <RotatingDice 
-        spinning={spinning} 
-        selected={selected} 
-        finalFace={finalFace} 
-        setFinalFace={setFinalFace} 
+      <RotatingDice
+        spinning={spinning}
+        selected={selected}
+        finalFace={finalFace}
+        setFinalFace={setFinalFace}
+        randomGoldTextures={randomGoldTextures}
       />
     </Canvas>
   );
@@ -97,7 +115,7 @@ const Dice = ({ spinning, selectable, playerId, turn }) => {
 // Styles for the Dice component using StyleSheet
 const styles = StyleSheet.create({
   canvas: {
-    display: 'block', // Ensures block display for the canvas
+    display: "block", // Ensures block display for the canvas
     margin: 0, // Removes default margin
     padding: 0, // Removes default padding
     width: 100, // Set width of the canvas

@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import DiceTextureLoader from '../../logic/dice/DiceTextureLoader';
 import { getRotationAngles } from '../../logic/dice/DiceLogic';  // Imported from DiceLogic
 
-const RotatingDice = ({ spinning, selected, finalFace, setFinalFace }) => {
+const RotatingDice = ({ spinning, selected, finalFace, setFinalFace, randomGoldTextures }) => {
   const meshRef = useRef(); // Reference to the dice mesh
   const [textures, setTextures] = useState([]); // State to hold the dice textures
   const [rotationSpeed, setRotationSpeed] = useState(0.5); // Initial rotation speed
@@ -12,7 +12,7 @@ const RotatingDice = ({ spinning, selected, finalFace, setFinalFace }) => {
   useEffect(() => {
     const loadTextures = async () => {
       try {
-        const loadedTextures = await DiceTextureLoader(); // Load textures asynchronously
+        const loadedTextures = await DiceTextureLoader(randomGoldTextures); // Load textures asynchronously
         setTextures(loadedTextures); // Update state with loaded textures
       } catch (error) {
         console.error("Error loading textures:", error); // Log error if texture loading fails

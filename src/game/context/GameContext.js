@@ -68,11 +68,14 @@ export const GameProvider = ({ children }) => {
   };
 
   // Function to add selected dice to a player's selection
-  const addSelectedDice = (playerId, dice) => {
+  const addSelectedDice = (playerId, dice, gold) => {
     setPlayers((prevPlayers) => {
       const updatedPlayer = {
         ...prevPlayers[playerId],
-        selectedDice: [...prevPlayers[playerId].selectedDice, dice].slice(0, 6), // Limit selection to 6 dice
+        selectedDice: [
+          ...prevPlayers[playerId].selectedDice,
+          { number: dice, gold: gold } // Add a new object with the dice number and gold status
+        ].slice(0, 6), // Limit the selection to 6 dice
       };
       return { ...prevPlayers, [playerId]: updatedPlayer }; // Return updated players object
     });
@@ -83,13 +86,15 @@ export const GameProvider = ({ children }) => {
     setPlayers((prevPlayers) => {
       const updatedPlayer = {
         ...prevPlayers[playerId],
-        selectedDice: prevPlayers[playerId].selectedDice.filter((d) => d !== dice), // Remove specific dice
+        selectedDice: prevPlayers[playerId].selectedDice.filter((d) => {
+          // Compare both the dice number and gold status
+          return d.number !== dice.number || d.gold !== dice.gold;
+        }),
       };
       return { ...prevPlayers, [playerId]: updatedPlayer }; // Return updated players object
     });
   };
-  
- 
+
   return (
     // Providing context values to children components
     <GameContext.Provider
