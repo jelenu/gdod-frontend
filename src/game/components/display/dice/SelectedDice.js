@@ -1,60 +1,54 @@
-import React, { useState, useEffect } from "react"; // Importing necessary React modules
-import { View, StyleSheet, Image } from "react-native"; // Importing components from React Native
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, Image } from "react-native";
 
-// SelectedDice functional component to display the dice selected by the player
 const SelectedDice = ({ player, turn }) => {
-  // State to hold the selected dice values for the player
-  const [selectedDice, setSelectedDice] = useState(player.selectedDice);
+  const [selectedDice, setSelectedDice] = useState(player.selectedDice); // Estado para almacenar los dados seleccionados
 
-  // Function to get the corresponding image for each die value
+  // Función para obtener la imagen según el valor del dado
   const getDiceImage = (dieValue) => {
     switch (dieValue) {
       case 0:
-        return require('../../../../../assets/dice/shield_face.png'); // Shield face image
+        return require('../../../../../assets/dice/sword_face.png');
       case 1:
-        return require('../../../../../assets/dice/helmet_face.png'); // Helmet face image
+        return require('../../../../../assets/dice/arrow_face.png');
       case 2:
-        return require('../../../../../assets/dice/steal_face.png'); // Steal face image
+        return require('../../../../../assets/dice/helmet_face.png');
       case 3:
-        return require('../../../../../assets/dice/arrow_face.png'); // Arrow face image
+        return require('../../../../../assets/dice/shield_face.png');
       case 4:
-        return require('../../../../../assets/dice/sword_face.png'); // Sword face image
-      default:
-        return null; // Return null if dieValue doesn't match any case
+        return require('../../../../../assets/dice/steal_face.png');
     }
   };
 
-  // Effect to update the selected dice when the turn changes
+  // Actualiza los dados seleccionados solo cuando el turno cambie
   useEffect(() => {
-    setSelectedDice(player.selectedDice); // Update the selectedDice state with player's selectedDice
-  }, [turn]); // Only runs when the turn changes
+    setSelectedDice(player.selectedDice);
+  }, [turn]); // Se ejecuta solo cuando el turno cambia
 
   return (
     <View style={styles.container}>
       {selectedDice.map((die, index) => (
         <Image
-          key={index} // Unique key for each image to help React identify which items have changed
+          key={index}
           style={styles.image}
-          source={getDiceImage(die)} // Get the corresponding image for the die value
+          source={getDiceImage(die)} // Selecciona la imagen correspondiente al valor del dado
         />
       ))}
     </View>
   );
 };
 
-// Styles for the component
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row', // Align items in a row
-    alignItems: 'center', // Center items vertically
-    justifyContent: 'center', // Center items horizontally
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   image: {
-    margin: 5, // Margin around each die image
-    width: 60, // Width of each die image
-    height: 60, // Height of each die image
+    margin: 5,
+    width: 60,
+    height: 60,
   },
 });
 
-// Exporting the SelectedDice component for use in other parts of the application
 export default SelectedDice;

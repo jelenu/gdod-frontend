@@ -26,7 +26,7 @@ const LocalModeScreen = () => {
     // Main container for the LocalModeScreen, styled with flexbox
     <View style={styles.container}>
       {/* Displaying the current turn information */}
-      <TurnDisplay />
+      {!isAttackPhase && <TurnDisplay /> }
       {/* Displaying health bar for player two */}
       <HealthBar player={playerTwo} />
 

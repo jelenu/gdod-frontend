@@ -6,9 +6,12 @@ import Dice from './Dice';
 // Importing buttons for interacting with the dice
 import DiceButton from '../../controls/dice/DiceButton';
 import SelectDiceButton from '../../controls/dice/SelectDiceButton';
+import { useGameContext } from "../../../context/GameContext";
 
 // DiceSet functional component to manage a set of dice for a player
 const DiceSet = ({ player, turn }) => {
+  const { endTurn } = useGameContext();
+
   // State to manage whether the dice are spinning
   const [isSpinning, setIsSpinning] = useState(false);
   // State to control whether the dice can be selected
@@ -38,9 +41,15 @@ const DiceSet = ({ player, turn }) => {
   // Effect to initialize the dice array based on the player's selected dice
   useEffect(() => {
     const diceCount = 6 - player.selectedDice.length; // Calculate how many dice can still be rolled
-    setInitialDiceArray([...Array(diceCount)]); // Create an array of the available dice
-    setVisibleButton(true); // Reset the visibility of the spin button
-    setSelectDiceButtonVisible(false); // Reset the visibility of the select button
+    if(diceCount === 0 && turn === player.id){
+      endTurn();
+      console.log("skip turn")
+    }else{
+      setInitialDiceArray([...Array(diceCount)]); // Create an array of the available dice
+      setVisibleButton(true); // Reset the visibility of the spin button
+      setSelectDiceButtonVisible(false); // Reset the visibility of the select button
+    }
+    
   }, [turn]); // Re-run this effect when the turn changes
 
   return (

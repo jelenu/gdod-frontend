@@ -88,7 +88,8 @@ export const GameProvider = ({ children }) => {
       return { ...prevPlayers, [playerId]: updatedPlayer }; // Return updated players object
     });
   };
-
+  
+ 
   return (
     // Providing context values to children components
     <GameContext.Provider
