@@ -111,7 +111,7 @@ export const GameProvider = ({ children }) => {
         removeSelectedDice, // Function to remove dice from a player's selection
       }}
     >
-      {children} {/* Render children components */}
+      {children}
     </GameContext.Provider>
   );
 };
