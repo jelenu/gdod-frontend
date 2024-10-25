@@ -96,9 +96,9 @@ const Dice = ({ spinning, selectable, playerId, turn }) => {
         document.body.style.cursor = "auto"; // Reset cursor style to default
       }}
     >
-      <OrbitControls enableRotate={false} enableZoom={false} />{" "}
+      <OrbitControls enableRotate={false} enableZoom={false} />
       {/* Controls for camera movement */}
-      <ambientLight intensity={5} />{" "}
+      <ambientLight intensity={5} />
       {/* Ambient light for better visibility of the dice */}
       {/* RotatingDice component that visually represents the dice */}
       <RotatingDice

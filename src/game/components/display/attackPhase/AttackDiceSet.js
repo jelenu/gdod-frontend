@@ -49,7 +49,7 @@ const AttackDiceSet = () => {
               {imageSource ? (
                 <Image source={imageSource} style={styles.diceImage} />
               ) : (
-                <View style={styles.emptySpace} /> // Renderizar espacio en blanco si no hay imagen
+                <View style={styles.emptySpace} />
               )}
             </View>
           );

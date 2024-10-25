@@ -4,19 +4,31 @@ import { View, StyleSheet, Image } from "react-native";
 const SelectedDice = ({ player, turn }) => {
   const [selectedDice, setSelectedDice] = useState(player.selectedDice); // State to store selected dice
 
-  // Function to get the image based on the die value
-  const getDiceImage = (dieValue) => {
-    switch (dieValue) {
+  // Function to get the image based on the die value and if it's gold
+  const getDiceImage = (die) => {
+    const { number, gold } = die;
+
+    switch (number) {
       case 0:
-        return require('../../../../../assets/dice/sword_face.png');
+        return gold
+          ? require('../../../../../assets/dice/sword_face_gold.png')
+          : require('../../../../../assets/dice/sword_face.png');
       case 1:
-        return require('../../../../../assets/dice/arrow_face.png');
+        return gold
+          ? require('../../../../../assets/dice/arrow_face_gold.png')
+          : require('../../../../../assets/dice/arrow_face.png');
       case 2:
-        return require('../../../../../assets/dice/helmet_face.png');
+        return gold
+          ? require('../../../../../assets/dice/helmet_face_gold.png')
+          : require('../../../../../assets/dice/helmet_face.png');
       case 3:
-        return require('../../../../../assets/dice/shield_face.png');
+        return gold
+          ? require('../../../../../assets/dice/shield_face_gold.png')
+          : require('../../../../../assets/dice/shield_face.png');
       case 4:
-        return require('../../../../../assets/dice/steal_face.png');
+        return gold
+          ? require('../../../../../assets/dice/steal_face_gold.png')
+          : require('../../../../../assets/dice/steal_face.png');
       default:
         return null; // Return null for unsupported die values
     }
@@ -33,7 +45,7 @@ const SelectedDice = ({ player, turn }) => {
         <Image
           key={index}
           style={styles.image}
-          source={getDiceImage(die.number)} // Selects the corresponding image for the die value
+          source={getDiceImage(die)} // Passes the die object to get the correct image
         />
       ))}
     </View>
