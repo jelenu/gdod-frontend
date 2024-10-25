@@ -8,8 +8,8 @@ const GameContext = createContext();
 export const GameProvider = ({ children }) => {
   // State to manage player data, including ID, name, health, and selected dice
   const [players, setPlayers] = useState({
-    1: { id: 1, name: "Player 1", health: 15, selectedDice: [] },
-    2: { id: 2, name: "Player 2", health: 15, selectedDice: [] },
+    1: { id: 1, name: "Player 1", health: 15, selectedDice: [], coin: 0},
+    2: { id: 2, name: "Player 2", health: 15, selectedDice: [], coin: 0 },
   });
 
   // Function to randomly determine which player starts first

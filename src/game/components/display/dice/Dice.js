@@ -41,11 +41,7 @@ const Dice = ({ spinning, selectable, playerId, turn }) => {
         removeSelectedDice(playerId, finalFace, randomGoldTextures[finalFace]); // Remove dice if it was previously selected
       } else {
         addSelectedDice(playerId, finalFace, randomGoldTextures[finalFace]); // Add dice if it is newly selected
-        console.log(
-          finalFace,
-          randomGoldTextures[finalFace],
-          randomGoldTextures
-        );
+        
       }
     }
   };

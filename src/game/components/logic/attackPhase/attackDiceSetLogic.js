@@ -82,20 +82,32 @@ export const reorderDiceSets = (attackerDiceSet, defenderDiceSet) => {
 
 // Function to get the image of the die based on its value
 export const getDiceImage = (die) => {
-  if (!die) return null; // If the die is null, return null
-
-  switch (die.number) {
-    case 0:
-      return require("../../../../../assets/dice/sword_face.png");
-    case 1:
-      return require("../../../../../assets/dice/arrow_face.png");
-    case 2:
-      return require("../../../../../assets/dice/helmet_face.png");
-    case 3:
-      return require("../../../../../assets/dice/shield_face.png");
-    case 4:
-      return require("../../../../../assets/dice/steal_face.png");
-    default:
-      return null; // Return null if it doesn't match
+  if (die === null) {
+    return null;
   }
+
+  const { number, gold } = die;
+
+  // Mapa de imágenes para los dados
+  const images = {
+    0: gold
+      ? require("../../../../../assets/dice/sword_face_gold.png")
+      : require("../../../../../assets/dice/sword_face.png"),
+    1: gold
+      ? require("../../../../../assets/dice/arrow_face_gold.png")
+      : require("../../../../../assets/dice/arrow_face.png"),
+    2: gold
+      ? require("../../../../../assets/dice/helmet_face_gold.png")
+      : require("../../../../../assets/dice/helmet_face.png"),
+    3: gold
+      ? require("../../../../../assets/dice/shield_face_gold.png")
+      : require("../../../../../assets/dice/shield_face.png"),
+    4: gold
+      ? require("../../../../../assets/dice/steal_face_gold.png")
+      : require("../../../../../assets/dice/steal_face.png"),
+  };
+
+  // Devuelve la imagen correspondiente o null si no existe
+  return images[number] || null;
 };
+
