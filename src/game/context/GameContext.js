@@ -119,13 +119,14 @@ export const GameProvider = ({ children }) => {
   };
 
   // Function to remove selected dice from a player's selection
-  const removeSelectedDice = (playerId, dice) => {
+  const removeSelectedDice = (playerId, number,gold) => {
+    console.log("entra")
     setPlayers((prevPlayers) => {
       const updatedPlayer = {
         ...prevPlayers[playerId],
         selectedDice: prevPlayers[playerId].selectedDice.filter((d) => {
           // Compare both the dice number and gold status
-          return d.number !== dice.number || d.gold !== dice.gold;
+          return d.number !== number || d.gold !== gold;
         }),
       };
       return { ...prevPlayers, [playerId]: updatedPlayer }; // Return updated players object

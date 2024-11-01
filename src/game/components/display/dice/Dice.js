@@ -39,6 +39,7 @@ const Dice = ({ spinning, selectable, playerId, turn }) => {
       // Add or remove the dice based on the current selection state
       if (selected) {
         removeSelectedDice(playerId, finalFace, randomGoldTextures[finalFace]); // Remove dice if it was previously selected
+        console.log("deseleccionar",randomGoldTextures[finalFace])
       } else {
         addSelectedDice(playerId, finalFace, randomGoldTextures[finalFace]); // Add dice if it is newly selected
         
