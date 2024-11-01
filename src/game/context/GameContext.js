@@ -120,7 +120,6 @@ export const GameProvider = ({ children }) => {
 
   // Function to remove selected dice from a player's selection
   const removeSelectedDice = (playerId, number,gold) => {
-    console.log("entra")
     setPlayers((prevPlayers) => {
       const updatedPlayer = {
         ...prevPlayers[playerId],
