@@ -1,14 +1,56 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet, Image, Text } from "react-native";
 import { useGameContext } from "../../../context/GameContext";
 import { getDiceImage } from "../../logic/attackPhase/attackDiceSetLogic";
 
 const AttackDiceSet = () => {
-  const { players } = useGameContext();
+  const { players, takeDamage, stealCoins } = useGameContext();
 
   const playerOneDiceSet = players[1].selectedDice;
   const playerTwoDiceSet = players[2].selectedDice;
 
+  useEffect(() => {
+    // Establecemos un temporizador para ejecutar el efecto después de 1 segundo
+    const timeoutId = setTimeout(() => {
+      playerOneDiceSet.forEach((diceBlock, blockIndex) => {
+        diceBlock.forEach((die, dieIndex) => {
+          // Verificamos si el número del dado es 0 o 1
+          if (die && (die.number === 0 || die.number === 1)) {
+            // Obtenemos el dado correspondiente del oponente (player 2)
+            const opponentDie = playerTwoDiceSet[blockIndex]?.[dieIndex] ?? null;
+  
+            // Verificamos si el dado del oponente es `null`
+            if (opponentDie === null) {
+              takeDamage(2, 1);
+            }
+          } else if (die && die.number === 4) {
+            console.log("robar");
+            stealCoins(1, 2, 1);
+          }
+        });
+      });
+    
+      playerTwoDiceSet.forEach((diceBlock, blockIndex) => {
+        diceBlock.forEach((die, dieIndex) => {
+          // Verificamos si el número del dado es 0 o 1
+          if (die && (die.number === 0 || die.number === 1)) {
+            const opponentDie = playerOneDiceSet[blockIndex]?.[dieIndex] ?? null;
+  
+            // Verificamos si el dado del oponente es `null`
+            if (opponentDie === null) {
+              takeDamage(1, 1);
+            }
+          } else if (die && die.number === 4) {
+            console.log("robar");
+            stealCoins(2, 1, 1);
+          }
+        });
+      });
+    }, 1000); // Retardo de 1 segundo (1000 ms)
+
+    // Limpiar el temporizador en caso de desmontaje del componente
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   return (
     <View style={styles.container}>

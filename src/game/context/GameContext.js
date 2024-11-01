@@ -129,32 +129,48 @@ export const GameProvider = ({ children }) => {
   };
 
   // Function to steal coins from another player
-  const stealCoins = (stealerId, targetId, amount) => {
-    setPlayers((prevPlayers) => {
-      const targetPlayer = prevPlayers[targetId];
-      const stealerPlayer = prevPlayers[stealerId];
-      
-      // Determine the actual amount to steal (cannot exceed what target has)
-      const coinsToSteal = Math.min(amount, targetPlayer.coin);
+const stealCoins = (stealerId, targetId, amount) => {
+  console.log("Entrando en stealCoins");
+  
+  setPlayers((prevPlayers) => {
+    // Verificamos los valores actuales antes de actualizar
+    console.log("Estado actual de prevPlayers:", prevPlayers);
 
-      // Update the players' coin totals
-      const updatedStealer = {
-        ...stealerPlayer,
-        coin: stealerPlayer.coin + coinsToSteal, // Increment the stealer's coins
-      };
+    const targetPlayer = prevPlayers[targetId];
+    const stealerPlayer = prevPlayers[stealerId];
+    
+    // Si targetPlayer o stealerPlayer no existen, terminamos la ejecución
+    if (!targetPlayer || !stealerPlayer) {
+      console.error(`Jugador objetivo ${targetId} o ladrón ${stealerId} no encontrado`);
+      return prevPlayers; // Retornamos el estado sin cambios si algún jugador es `null` o `undefined`
+    }
 
-      const updatedTarget = {
-        ...targetPlayer,
-        coin: targetPlayer.coin - coinsToSteal, // Decrement the target's coins
-      };
+    // Determina la cantidad real a robar (no puede exceder lo que tiene el objetivo)
+    const coinsToSteal = Math.min(amount, targetPlayer.coin);
 
-      return {
-        ...prevPlayers,
-        [stealerId]: updatedStealer, // Update stealer's coins
-        [targetId]: updatedTarget,     // Update target's coins
-      };
-    });
-  };
+    // Actualiza los totales de monedas de los jugadores
+    const updatedStealer = {
+      ...stealerPlayer,
+      coin: stealerPlayer.coin + coinsToSteal, // Incrementa las monedas del ladrón
+    };
+
+    const updatedTarget = {
+      ...targetPlayer,
+      coin: targetPlayer.coin - coinsToSteal, // Decrementa las monedas del objetivo
+    };
+
+    console.log(`Stealer: ${stealerId}, Target: ${targetId}, Coins Stolen: ${coinsToSteal}`);
+
+    return {
+      ...prevPlayers,
+      [stealerId]: updatedStealer, // Actualiza las monedas del ladrón
+      [targetId]: updatedTarget,    // Actualiza las monedas del objetivo
+    };
+  });
+};
+
+
+
 
   return (
     // Providing context values to children components

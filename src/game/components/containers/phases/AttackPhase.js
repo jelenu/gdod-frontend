@@ -7,11 +7,19 @@ const AttackPhase = () => {
   const { players, addCoins } = useGameContext();
 
   useEffect(() => {
-    // Iterate through each player and count gold dice
+    // Recorre cada jugador y cuenta los dados de oro en todas las listas de `selectedDice`
     Object.keys(players).forEach((playerId) => {
       const player = players[playerId];
-      const goldDiceCount = player.selectedDice.filter(dice => dice.gold).length; // Count how many selected dice have gold set to true
-      addCoins(playerId, goldDiceCount); // Add coins based on the gold dice count
+  
+      // Aplana la lista de listas en `selectedDice`, ignora null y undefined, y cuenta los dados con `gold: true`
+      const goldDiceCount = player.selectedDice
+        .filter((diceBlock) => diceBlock) // Filtra bloques nulos o undefined
+        .flat() // Aplana los bloques de dados en una sola lista
+        .filter((dice) => dice?.gold) // Utiliza optional chaining para verificar si `gold` es true
+        .length; // Cuenta los dados de oro
+  
+      // Agrega monedas al jugador en función de la cantidad de dados de oro
+      addCoins(playerId, goldDiceCount);
     });
   }, []);
 
