@@ -4,7 +4,7 @@ import AttackDiceSet from "../../display/attackPhase/AttackDiceSet";
 import { useGameContext } from "../../../context/GameContext";
 
 const AttackPhase = () => {
-  const { players, addCoins } = useGameContext();
+  const { players, addCoins, endAttackPhase } = useGameContext();
 
   useEffect(() => {
     // Recorre cada jugador y cuenta los dados de oro en todas las listas de `selectedDice`
@@ -22,6 +22,16 @@ const AttackPhase = () => {
       addCoins(playerId, goldDiceCount);
     });
   }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      endAttackPhase()
+    }, 5000);
+  
+    return () => clearTimeout(timeoutId);
+
+  }, [])
+  
 
   return (
     <View style={styles.container}>

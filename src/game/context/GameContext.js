@@ -23,27 +23,33 @@ export const GameProvider = ({ children }) => {
   const [turnsThisRound, setTurnsThisRound] = useState(0);
   const [isAttackPhase, setIsAttackPhase] = useState(false); // Flag for attack phase
 
-
   const reorderSelectedDice = () => {
     setPlayers((prevPlayers) => {
       const playerOneDiceSet = prevPlayers[1].selectedDice;
       const playerTwoDiceSet = prevPlayers[2].selectedDice;
-  
+
       // Reordenar dependiendo de quién tiene el turno
-      const [reorderedPlayerOneDiceSet, reorderedPlayerTwoDiceSet] = 
+      const [reorderedPlayerOneDiceSet, reorderedPlayerTwoDiceSet] =
         turn === 1
           ? reorderDiceSets(playerOneDiceSet, playerTwoDiceSet)
           : reorderDiceSets(playerTwoDiceSet, playerOneDiceSet);
-  
+
       // Actualizar el estado `selectedDice` en función de quién ataca primero
       return {
         ...prevPlayers,
-        1: { ...prevPlayers[1], selectedDice: turn === 1 ? reorderedPlayerOneDiceSet : reorderedPlayerTwoDiceSet },
-        2: { ...prevPlayers[2], selectedDice: turn === 1 ? reorderedPlayerTwoDiceSet : reorderedPlayerOneDiceSet },
+        1: {
+          ...prevPlayers[1],
+          selectedDice:
+            turn === 1 ? reorderedPlayerOneDiceSet : reorderedPlayerTwoDiceSet,
+        },
+        2: {
+          ...prevPlayers[2],
+          selectedDice:
+            turn === 1 ? reorderedPlayerTwoDiceSet : reorderedPlayerOneDiceSet,
+        },
       };
     });
   };
-
 
   // Function to apply damage to a player and check for victory
   const takeDamage = (playerId, damage) => {
@@ -82,11 +88,14 @@ export const GameProvider = ({ children }) => {
     const playerOne = players[1]; // Reference to player one
     const playerTwo = players[2]; // Reference to player two
     // Check if both players have selected 6 dice or if 3 rounds have been completed
-    if ((playerOne.selectedDice.length === 6 && playerTwo.selectedDice.length === 6) || round  === 3) {
+    if (
+      (playerOne.selectedDice.length === 6 &&
+        playerTwo.selectedDice.length === 6) ||
+      round === 3
+    ) {
       reorderSelectedDice();
       setIsAttackPhase(true); // Move to attack phase
     }
-    
   };
 
   // Function to add selected dice to a player's selection
@@ -96,7 +105,7 @@ export const GameProvider = ({ children }) => {
         ...prevPlayers[playerId],
         selectedDice: [
           ...prevPlayers[playerId].selectedDice,
-          { number: dice, gold: gold } // Add a new object with the dice number and gold status
+          { number: dice, gold: gold }, // Add a new object with the dice number and gold status
         ].slice(0, 6), // Limit the selection to 6 dice
       };
       return { ...prevPlayers, [playerId]: updatedPlayer }; // Return updated players object
@@ -129,48 +138,53 @@ export const GameProvider = ({ children }) => {
   };
 
   // Function to steal coins from another player
-const stealCoins = (stealerId, targetId, amount) => {
-  console.log("Entrando en stealCoins");
-  
-  setPlayers((prevPlayers) => {
-    // Verificamos los valores actuales antes de actualizar
-    console.log("Estado actual de prevPlayers:", prevPlayers);
+  const stealCoins = (stealerId, targetId, amount) => {
 
-    const targetPlayer = prevPlayers[targetId];
-    const stealerPlayer = prevPlayers[stealerId];
-    
-    // Si targetPlayer o stealerPlayer no existen, terminamos la ejecución
-    if (!targetPlayer || !stealerPlayer) {
-      console.error(`Jugador objetivo ${targetId} o ladrón ${stealerId} no encontrado`);
-      return prevPlayers; // Retornamos el estado sin cambios si algún jugador es `null` o `undefined`
-    }
+    setPlayers((prevPlayers) => {
+      // Verificamos los valores actuales antes de actualizar
 
-    // Determina la cantidad real a robar (no puede exceder lo que tiene el objetivo)
-    const coinsToSteal = Math.min(amount, targetPlayer.coin);
+      const targetPlayer = prevPlayers[targetId];
+      const stealerPlayer = prevPlayers[stealerId];
 
-    // Actualiza los totales de monedas de los jugadores
-    const updatedStealer = {
-      ...stealerPlayer,
-      coin: stealerPlayer.coin + coinsToSteal, // Incrementa las monedas del ladrón
-    };
 
-    const updatedTarget = {
-      ...targetPlayer,
-      coin: targetPlayer.coin - coinsToSteal, // Decrementa las monedas del objetivo
-    };
+      // Determina la cantidad real a robar (no puede exceder lo que tiene el objetivo)
+      const coinsToSteal = Math.min(amount, targetPlayer.coin);
 
-    console.log(`Stealer: ${stealerId}, Target: ${targetId}, Coins Stolen: ${coinsToSteal}`);
+      // Actualiza los totales de monedas de los jugadores
+      const updatedStealer = {
+        ...stealerPlayer,
+        coin: stealerPlayer.coin + coinsToSteal, // Incrementa las monedas del ladrón
+      };
 
-    return {
+      const updatedTarget = {
+        ...targetPlayer,
+        coin: targetPlayer.coin - coinsToSteal, // Decrementa las monedas del objetivo
+      };
+
+      return {
+        ...prevPlayers,
+        [stealerId]: updatedStealer, // Actualiza las monedas del ladrón
+        [targetId]: updatedTarget, // Actualiza las monedas del objetivo
+      };
+    });
+  };
+
+  const endAttackPhase = () => {
+    setPlayers((prevPlayers) => ({
       ...prevPlayers,
-      [stealerId]: updatedStealer, // Actualiza las monedas del ladrón
-      [targetId]: updatedTarget,    // Actualiza las monedas del objetivo
-    };
-  });
-};
-
-
-
+      1: {
+        ...prevPlayers[1],
+        selectedDice: [], // Restablece selectedDice de Player 1 a una lista vacía
+      },
+      2: {
+        ...prevPlayers[2],
+        selectedDice: [], // Restablece selectedDice de Player 2 a una lista vacía
+      },
+    }));
+    
+    setIsAttackPhase(false); // Termina la fase de ataque
+  };
+  
 
   return (
     // Providing context values to children components
@@ -188,7 +202,7 @@ const stealCoins = (stealerId, targetId, amount) => {
         removeSelectedDice, // Function to remove dice from a player's selection
         addCoins, // Function to add coins to a player's total
         stealCoins, // Function to steal coins from another player
-
+        endAttackPhase,
       }}
     >
       {children}

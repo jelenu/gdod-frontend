@@ -24,7 +24,6 @@ const AttackDiceSet = () => {
               takeDamage(2, 1);
             }
           } else if (die && die.number === 4) {
-            console.log("robar");
             stealCoins(1, 2, 1);
           }
         });
@@ -41,7 +40,6 @@ const AttackDiceSet = () => {
               takeDamage(1, 1);
             }
           } else if (die && die.number === 4) {
-            console.log("robar");
             stealCoins(2, 1, 1);
           }
         });
