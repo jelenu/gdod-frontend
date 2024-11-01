@@ -1,5 +1,6 @@
 // Importing necessary React functions to create context and manage state
 import React, { createContext, useState, useContext } from "react";
+import { reorderDiceSets } from "../components/logic/attackPhase/attackDiceSetLogic";
 
 // Creating a GameContext to manage game state globally
 const GameContext = createContext();
@@ -8,7 +9,7 @@ const GameContext = createContext();
 export const GameProvider = ({ children }) => {
   // State to manage player data, including ID, name, health, and selected dice
   const [players, setPlayers] = useState({
-    1: { id: 1, name: "Player 1", health: 15, selectedDice: [], coin: 0},
+    1: { id: 1, name: "Player 1", health: 15, selectedDice: [], coin: 0 },
     2: { id: 2, name: "Player 2", health: 15, selectedDice: [], coin: 0 },
   });
 
@@ -21,6 +22,28 @@ export const GameProvider = ({ children }) => {
   const [whoWins, setWhoWins] = useState(""); // Stores the winning player ID
   const [turnsThisRound, setTurnsThisRound] = useState(0);
   const [isAttackPhase, setIsAttackPhase] = useState(false); // Flag for attack phase
+
+
+  const reorderSelectedDice = () => {
+    setPlayers((prevPlayers) => {
+      const playerOneDiceSet = prevPlayers[1].selectedDice;
+      const playerTwoDiceSet = prevPlayers[2].selectedDice;
+  
+      // Reordenar dependiendo de quién tiene el turno
+      const [reorderedPlayerOneDiceSet, reorderedPlayerTwoDiceSet] = 
+        turn === 1
+          ? reorderDiceSets(playerOneDiceSet, playerTwoDiceSet)
+          : reorderDiceSets(playerTwoDiceSet, playerOneDiceSet);
+  
+      // Actualizar el estado `selectedDice` en función de quién ataca primero
+      return {
+        ...prevPlayers,
+        1: { ...prevPlayers[1], selectedDice: turn === 1 ? reorderedPlayerOneDiceSet : reorderedPlayerTwoDiceSet },
+        2: { ...prevPlayers[2], selectedDice: turn === 1 ? reorderedPlayerTwoDiceSet : reorderedPlayerOneDiceSet },
+      };
+    });
+  };
+
 
   // Function to apply damage to a player and check for victory
   const takeDamage = (playerId, damage) => {
@@ -59,12 +82,11 @@ export const GameProvider = ({ children }) => {
     const playerOne = players[1]; // Reference to player one
     const playerTwo = players[2]; // Reference to player two
     // Check if both players have selected 6 dice or if 3 rounds have been completed
-    if (playerOne.selectedDice.length === 6 && playerTwo.selectedDice.length === 6) {
+    if ((playerOne.selectedDice.length === 6 && playerTwo.selectedDice.length === 6) || round  === 3) {
+      reorderSelectedDice();
       setIsAttackPhase(true); // Move to attack phase
     }
-    if (round === 3) {
-      setIsAttackPhase(true); // Move to attack phase if 3 rounds are complete
-    }
+    
   };
 
   // Function to add selected dice to a player's selection
@@ -95,6 +117,45 @@ export const GameProvider = ({ children }) => {
     });
   };
 
+  // Function to add coins to a player's total
+  const addCoins = (playerId, coins) => {
+    setPlayers((prevPlayers) => {
+      const updatedPlayer = {
+        ...prevPlayers[playerId],
+        coin: prevPlayers[playerId].coin + coins, // Increment the player's coins
+      };
+      return { ...prevPlayers, [playerId]: updatedPlayer }; // Return updated players object
+    });
+  };
+
+  // Function to steal coins from another player
+  const stealCoins = (stealerId, targetId, amount) => {
+    setPlayers((prevPlayers) => {
+      const targetPlayer = prevPlayers[targetId];
+      const stealerPlayer = prevPlayers[stealerId];
+      
+      // Determine the actual amount to steal (cannot exceed what target has)
+      const coinsToSteal = Math.min(amount, targetPlayer.coin);
+
+      // Update the players' coin totals
+      const updatedStealer = {
+        ...stealerPlayer,
+        coin: stealerPlayer.coin + coinsToSteal, // Increment the stealer's coins
+      };
+
+      const updatedTarget = {
+        ...targetPlayer,
+        coin: targetPlayer.coin - coinsToSteal, // Decrement the target's coins
+      };
+
+      return {
+        ...prevPlayers,
+        [stealerId]: updatedStealer, // Update stealer's coins
+        [targetId]: updatedTarget,     // Update target's coins
+      };
+    });
+  };
+
   return (
     // Providing context values to children components
     <GameContext.Provider
@@ -109,6 +170,9 @@ export const GameProvider = ({ children }) => {
         endTurn, // Function to end the current turn
         addSelectedDice, // Function to add dice to a player's selection
         removeSelectedDice, // Function to remove dice from a player's selection
+        addCoins, // Function to add coins to a player's total
+        stealCoins, // Function to steal coins from another player
+
       }}
     >
       {children}

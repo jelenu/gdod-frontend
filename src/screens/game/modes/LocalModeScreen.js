@@ -7,11 +7,12 @@ import { View, StyleSheet } from 'react-native';
 // Importing components for different phases of the game
 import SelectDicePhase from '../../../game/components/containers/phases/SelectDicePhase';
 import AttackPhase from '../../../game/components/containers/phases/AttackPhase';
-import TurnDisplay from '../../../game/components/display/TurnDisplay';
+import TurnDisplay from '../../../game/components/display/turn/TurnDisplay';
 import HealthBar from '../../../game/components/display/health/HealthBar';
 
 // Importing the custom hook to access the game context
 import { useGameContext } from '../../../game/context/GameContext';
+import CoinDisplay from '../../../game/components/display/coins/CoinDisplay';
 
 // LocalModeScreen functional component representing the local gameplay mode
 const LocalModeScreen = () => {
@@ -29,12 +30,15 @@ const LocalModeScreen = () => {
       {!isAttackPhase && <TurnDisplay /> }
       {/* Displaying health bar for player two */}
       <HealthBar player={playerTwo} />
+      <CoinDisplay coin={playerTwo.coin}/>
 
       {/* Conditional rendering based on the attack phase */}
       {isAttackPhase ? <AttackPhase /> : <SelectDicePhase />}
 
+      <CoinDisplay coin={playerOne.coin}/>
       {/* Displaying health bar for player one */}
       <HealthBar player={playerOne} />
+
     </View>
   );
 };

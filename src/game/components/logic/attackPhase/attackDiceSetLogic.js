@@ -51,30 +51,30 @@ export const reorderDiceSets = (attackerDiceSet, defenderDiceSet) => {
 
   // Fill `stealAttacker` with 'null' at the end to make its length equal to the total
   const equalStealAttacker = [
-    ...stealAttacker,
     ...new Array(totalLength - stealAttacker.length).fill(null),
   ];
 
   // Fill `stealDefender` with 'null' at the beginning to make its length equal to the total
   const equalStealDefender = [
     ...new Array(totalLength - stealDefender.length).fill(null),
-    ...stealDefender,
   ];
 
   const reorderedAttackerDiceSet = [
-    ...equalSwordsAttacker,
-    ...equalArrowsAttacker,
-    ...equalHelmetsAttacker,
-    ...equalShieldsAttacker,
-    ...equalStealAttacker,
+    [...equalSwordsAttacker],
+    [...equalArrowsAttacker],
+    [...equalHelmetsAttacker],
+    [...equalShieldsAttacker],
+    [...stealAttacker],
+    [...equalStealAttacker],
   ];
-
+  
   const reorderedDefenderDiceSet = [
-    ...equalHelmetsDefender,
-    ...equalShieldsDefender,
-    ...equalSwordsDefender,
-    ...equalArrowsDefender,
-    ...equalStealDefender,
+    [...equalHelmetsDefender],
+    [...equalShieldsDefender],
+    [...equalSwordsDefender],
+    [...equalArrowsDefender],
+    [...equalStealDefender],
+    [...stealDefender],
   ];
 
   return [reorderedAttackerDiceSet, reorderedDefenderDiceSet];

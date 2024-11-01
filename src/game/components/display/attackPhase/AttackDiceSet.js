@@ -1,59 +1,55 @@
 import React from "react";
 import { View, StyleSheet, Image, Text } from "react-native";
 import { useGameContext } from "../../../context/GameContext";
-import { reorderDiceSets, getDiceImage } from "../../logic/attackPhase/attackDiceSetLogic";
+import { getDiceImage } from "../../logic/attackPhase/attackDiceSetLogic";
 
 const AttackDiceSet = () => {
-  const { players, turn } = useGameContext();
+  const { players } = useGameContext();
 
   const playerOneDiceSet = players[1].selectedDice;
   const playerTwoDiceSet = players[2].selectedDice;
 
-  const attackerDiceSet = turn === 1 ? playerOneDiceSet : playerTwoDiceSet;
-  const defenderDiceSet = turn === 1 ? playerTwoDiceSet : playerOneDiceSet;
-
-  const [reorderedAttackerDiceSet, reorderedDefenderDiceSet] = reorderDiceSets(
-    attackerDiceSet,
-    defenderDiceSet
-  );
-
-  const reorderedPlayerOneDiceSet =
-    turn === 1 ? reorderedAttackerDiceSet : reorderedDefenderDiceSet;
-  const reorderedPlayerTwoDiceSet =
-    turn === 1 ? reorderedDefenderDiceSet : reorderedAttackerDiceSet;
 
   return (
     <View style={styles.container}>
       <Text>Player 2</Text>
       <View style={styles.diceSet}>
-        {reorderedPlayerTwoDiceSet.map((dieValue, index) => {
-          const imageSource = getDiceImage(dieValue);
-          return (
-            <View key={index} style={styles.diceContainer}>
-              {imageSource ? (
-                <Image source={imageSource} style={styles.diceImage} />
-              ) : (
-                <View style={styles.emptySpace} />
-              )}
-            </View>
-          );
-        })}
+        {playerTwoDiceSet.map((diceBlock, blockIndex) => (
+          <View key={`block-${blockIndex}`} style={styles.diceBlock}>
+            {diceBlock.map((dieValue, index) => {
+              const imageSource = dieValue ? getDiceImage(dieValue) : null;
+              return (
+                <View key={`die-${index}`} style={styles.diceContainer}>
+                  {imageSource ? (
+                    <Image source={imageSource} style={styles.diceImage} />
+                  ) : (
+                    <View style={styles.emptySpace} />
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        ))}
       </View>
 
       <Text>Player 1</Text>
       <View style={styles.diceSet}>
-        {reorderedPlayerOneDiceSet.map((dieValue, index) => {
-          const imageSource = getDiceImage(dieValue);
-          return (
-            <View key={index} style={styles.diceContainer}>
-              {imageSource ? (
-                <Image source={imageSource} style={styles.diceImage} />
-              ) : (
-                <View style={styles.emptySpace} />
-              )}
-            </View>
-          );
-        })}
+        {playerOneDiceSet.map((diceBlock, blockIndex) => (
+          <View key={`block-${blockIndex}`} style={styles.diceBlock}>
+            {diceBlock.map((dieValue, index) => {
+              const imageSource = dieValue ? getDiceImage(dieValue) : null;
+              return (
+                <View key={`die-${index}`} style={styles.diceContainer}>
+                  {imageSource ? (
+                    <Image source={imageSource} style={styles.diceImage} />
+                  ) : (
+                    <View style={styles.emptySpace} />
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -69,21 +65,24 @@ const styles = StyleSheet.create({
   diceSet: {
     flexDirection: "row",
   },
+  diceBlock: {
+    flexDirection: "row",
+    marginVertical: 10,
+  },
   diceContainer: {
-    width: 60, // Ajustar el ancho de la imagen
-    height: 60, // Ajustar la altura de la imagen
-    margin: 5, // Agregar un margen entre las imágenes
+    width: 60,
+    height: 60,
+    margin: 5,
   },
   diceImage: {
-    width: 60, // Ajustar el ancho de la imagen
-    height: 60, // Ajustar la altura de la imagen
-    margin: 5, // Agregar un margen entre las imágenes
+    width: 60,
+    height: 60,
   },
   emptySpace: {
-    width: 60, // El mismo ancho que la imagen
-    height: 60, // El mismo alto que la imagen
-    margin: 5, // El mismo margen que las imágenes
-    backgroundColor: "transparent", // Color transparente para que no se vea
+    width: 60,
+    height: 60,
+    margin: 5,
+    backgroundColor: "transparent",
   },
 });
 
