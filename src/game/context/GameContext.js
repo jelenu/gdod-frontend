@@ -14,14 +14,35 @@ export const GameProvider = ({ children }) => {
   });
 
   // Function to randomly determine which player starts first
-  const getRandomTurn = () => (Math.random() < 0.5 ? 1 : 2);
+  const getRandomStarter = () => (Math.random() < 0.5 ? 1 : 2);
 
   // State to manage the current turn, round number, winner, and attack phase
-  const [turn, setTurn] = useState(getRandomTurn());
+  const [starter, setStarter] = useState(getRandomStarter()); 
+  const [turn, setTurn] = useState(starter);
   const [round, setRound] = useState(1);
-  const [whoWins, setWhoWins] = useState(""); // Stores the winning player ID
   const [turnsThisRound, setTurnsThisRound] = useState(0);
+  const [whoWins, setWhoWins] = useState(null); // Stores the winning player ID
   const [isAttackPhase, setIsAttackPhase] = useState(false); // Flag for attack phase
+
+
+   // Function to end the current player's turn and manage turn progression
+   const endTurn = () => {
+    // Switches the turn between players
+    setTurn((prevTurn) => (prevTurn === 1 ? 2 : 1));
+
+    // Updates the count of turns taken in this round
+    setTurnsThisRound((prevTurns) => {
+      if (prevTurns === 1) {
+        // Both players have completed their turns, increment round
+        setRound((prevRound) => prevRound + 1);
+        checkIfisAttackPhase(); // Check if it's time to enter the attack phase
+        return 0; // Reset turn counter for the new round
+      }
+      return prevTurns + 1; // Increment turn counter if only one turn has occurred
+    });
+
+  };
+
 
   const reorderSelectedDice = () => {
     setPlayers((prevPlayers) => {
@@ -30,7 +51,7 @@ export const GameProvider = ({ children }) => {
 
       // Reordenar dependiendo de quién tiene el turno
       const [reorderedPlayerOneDiceSet, reorderedPlayerTwoDiceSet] =
-        turn === 1
+        starter === 1
           ? reorderDiceSets(playerOneDiceSet, playerTwoDiceSet)
           : reorderDiceSets(playerTwoDiceSet, playerOneDiceSet);
 
@@ -40,12 +61,12 @@ export const GameProvider = ({ children }) => {
         1: {
           ...prevPlayers[1],
           selectedDice:
-            turn === 1 ? reorderedPlayerOneDiceSet : reorderedPlayerTwoDiceSet,
+            starter === 1 ? reorderedPlayerOneDiceSet : reorderedPlayerTwoDiceSet,
         },
         2: {
           ...prevPlayers[2],
           selectedDice:
-            turn === 1 ? reorderedPlayerTwoDiceSet : reorderedPlayerOneDiceSet,
+            starter === 1 ? reorderedPlayerTwoDiceSet : reorderedPlayerOneDiceSet,
         },
       };
     });
@@ -66,22 +87,7 @@ export const GameProvider = ({ children }) => {
     });
   };
 
-  // Function to end the current player's turn and manage turn progression
-  const endTurn = () => {
-    // Switches the turn between players
-    setTurn((prevTurn) => (prevTurn === 1 ? 2 : 1));
-
-    // Updates the count of turns taken in this round
-    setTurnsThisRound((prevTurns) => {
-      if (prevTurns === 1) {
-        // Both players have completed their turns, increment round
-        setRound((prevRound) => prevRound + 1);
-        checkIfisAttackPhase(); // Check if it's time to enter the attack phase
-        return 0; // Reset turn counter for the new round
-      }
-      return prevTurns + 1; // Increment turn counter if only one turn has occurred
-    });
-  };
+ 
 
   // Function to check if the game should transition to the attack phase
   const checkIfisAttackPhase = () => {
@@ -182,9 +188,16 @@ export const GameProvider = ({ children }) => {
       },
     }));
     
+    // Cambia el starter al jugador contrario
+    setStarter((prevStarter) => (prevStarter === 1 ? 2 : 1));
+
+    // Aquí es donde actualizamos `turn` al nuevo valor de `starter`
+    setTurn((prevTurn) => (prevTurn === 1 ? 2 : 1)); // Ahora usamos el nuevo starter
+
     setIsAttackPhase(false); // Termina la fase de ataque
+    setRound(1); // Reiniciar el contador de rondas
+
   };
-  
 
   return (
     // Providing context values to children components
