@@ -5,16 +5,12 @@ import { View, Text, StyleSheet } from "react-native"; // Importing necessary co
 const HealthBar = ({ player }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.container}>
-        <Text>{player.name}</Text>
-        {/* Displaying the player's name */}
-        <View style={styles.healthBar}>
-          <View
-            style={[styles.health, { width: `${(player.health / 15) * 100}%` }]} // Dynamic width based on player's health
-          />
-        </View>
-        <Text>{player.health} / 15</Text>{/* Displaying current health out of max health */}
+      <View style={styles.healthBar}>
+        <View
+          style={[styles.health, { width: `${(player.health / 15) * 100}%` }]} 
+        />
       </View>
+      <Text>{player.health} / 15</Text>
     </View>
   );
 };
@@ -24,6 +20,8 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: 10, // Space below the health bar
     alignItems: "center", // Centering items horizontally
+    justifyContent: "center", // Centering items vertically
+    height: 100, // Setting a fixed height to enable vertical centering
   },
   healthBar: {
     width: 150, // Fixed width of the health bar

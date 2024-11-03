@@ -48,7 +48,7 @@ const Dice = ({ spinning, selectable, playerId, turn }) => {
     if (round === 3 && finalFace !== null) {
       addSelectedDice(playerId, finalFace, randomGoldTextures[finalFace]);
     }
-  }, [round, finalFace, playerId, randomGoldTextures, addSelectedDice]);
+  }, [round]);
 
   return (
     <Canvas

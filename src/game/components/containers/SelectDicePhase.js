@@ -3,11 +3,11 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 // Importing the custom hook to access the game context
-import { useGameContext } from '../../../context/GameContext';
+import { useGameContext } from '../../context/GameContext';
 
 // Importing components for displaying selected dice and the available dice set
-import SelectedDice from '../../display/dice/SelectedDice';
-import DiceSet from '../../display/dice/DiceSet';
+import SelectedDice from '../display/dice/SelectedDice';
+import DiceSet from '../display/dice/DiceSet';
 
 // SelectDicePhase functional component representing the phase where players select dice
 const SelectDicePhase = () => {

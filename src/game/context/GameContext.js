@@ -9,24 +9,81 @@ const GameContext = createContext();
 export const GameProvider = ({ children }) => {
   // State to manage player data, including ID, name, health, and selected dice
   const [players, setPlayers] = useState({
-    1: { id: 1, name: "Player 1", health: 15, selectedDice: [], coin: 0 },
-    2: { id: 2, name: "Player 2", health: 15, selectedDice: [], coin: 0 },
+    1: {
+      id: 1,
+      name: "Player 1",
+      health: 15,
+      selectedDice: [],
+      coin: 4,
+      gods: [
+        {
+          id: 1,
+          typeId:1,
+          type:"Damage",
+          name: "Zeus",
+          description: "Zeus throws lightning bolts damaging the enemy",
+          gold: 4,
+          damage: 2,
+        },
+        {
+          id: 2,
+          typeId:2,
+          type:"Heal",
+          name: "Poseidon",
+          description: "Poseidon heals you thanks to the powers of the sea",
+          gold: 4,
+          heal: 2,
+        },
+      ],
+    },
+    2: {
+      id: 2,
+      name: "Player 2",
+      health: 15,
+      selectedDice: [],
+      coin: 4,
+      gods: [
+        {
+          id: 1,
+          typeId:1,
+          type:"Damage",
+          name: "Zeus",
+          description: "Zeus throws lightning bolts damaging the enemy",
+          gold: 4,
+          damage: 2,
+        },
+        {
+          id: 2,
+          typeId:2,
+          type:"Heal",
+          name: "Poseidon",
+          description: "Poseidon heals you thanks to the powers of the sea",
+          gold: 4,
+          heal: 2,
+        },
+      ],
+      selectedGod: null,
+    },
   });
 
   // Function to randomly determine which player starts first
   const getRandomStarter = () => (Math.random() < 0.5 ? 1 : 2);
 
   // State to manage the current turn, round number, winner, and attack phase
-  const [starter, setStarter] = useState(getRandomStarter()); 
+  const [starter, setStarter] = useState(getRandomStarter());
   const [turn, setTurn] = useState(starter);
   const [round, setRound] = useState(1);
   const [turnsThisRound, setTurnsThisRound] = useState(0);
   const [whoWins, setWhoWins] = useState(null); // Stores the winning player ID
-  const [isAttackPhase, setIsAttackPhase] = useState(false); // Flag for attack phase
+  const [gameStarted, setGameStarted] = useState(false);
+  const [phase, setPhase] = useState(1); // Track the current phase: 1 = Select Dice, 2 = Select Gods, 3 = Attack Phase
 
+  const startGame = () => {
+    setGameStarted(true); // Función para iniciar el juego
+  };
 
-   // Function to end the current player's turn and manage turn progression
-   const endTurn = () => {
+  // Function to end the current player's turn and manage turn progression
+  const endTurn = () => {
     // Switches the turn between players
     setTurn((prevTurn) => (prevTurn === 1 ? 2 : 1));
 
@@ -35,62 +92,43 @@ export const GameProvider = ({ children }) => {
       if (prevTurns === 1) {
         // Both players have completed their turns, increment round
         setRound((prevRound) => prevRound + 1);
-        checkIfisAttackPhase(); // Check if it's time to enter the attack phase
+        checkEndSelectDicePhase(); // Check if it's time to enter the attack phase
         return 0; // Reset turn counter for the new round
       }
       return prevTurns + 1; // Increment turn counter if only one turn has occurred
     });
-
   };
 
-
-  const reorderSelectedDice = () => {
-    setPlayers((prevPlayers) => {
-      const playerOneDiceSet = prevPlayers[1].selectedDice;
-      const playerTwoDiceSet = prevPlayers[2].selectedDice;
-
-      // Reordenar dependiendo de quién tiene el turno
-      const [reorderedPlayerOneDiceSet, reorderedPlayerTwoDiceSet] =
-        starter === 1
-          ? reorderDiceSets(playerOneDiceSet, playerTwoDiceSet)
-          : reorderDiceSets(playerTwoDiceSet, playerOneDiceSet);
-
-      // Actualizar el estado `selectedDice` en función de quién ataca primero
-      return {
+  const endPhase = () => {
+    if (phase === 1) {
+      setPhase(2);
+    } else if (phase === 2) {
+      setPhase(3);
+    } else {
+      setPlayers((prevPlayers) => ({
         ...prevPlayers,
         1: {
           ...prevPlayers[1],
-          selectedDice:
-            starter === 1 ? reorderedPlayerOneDiceSet : reorderedPlayerTwoDiceSet,
+          selectedDice: [],
+          selectedGod: null,
         },
         2: {
           ...prevPlayers[2],
-          selectedDice:
-            starter === 1 ? reorderedPlayerTwoDiceSet : reorderedPlayerOneDiceSet,
+          selectedDice: [],
+          selectedGod: null,
         },
-      };
-    });
-  };
+      }));
 
-  // Function to apply damage to a player and check for victory
-  const takeDamage = (playerId, damage) => {
-    setPlayers((prevPlayers) => {
-      const updatedPlayer = {
-        ...prevPlayers[playerId],
-        health: prevPlayers[playerId].health - damage, // Reducing player health
-      };
-      // Check if the player's health is zero or below to declare a winner
-      if (updatedPlayer.health <= 0) {
-        setWhoWins(playerId === 1 ? "2" : "1"); // Set winner based on player ID
-      }
-      return { ...prevPlayers, [playerId]: updatedPlayer }; // Return updated players object
-    });
-  };
+      setStarter((prevStarter) => (prevStarter === 1 ? 2 : 1));
 
- 
+      setTurn((prevTurn) => (prevTurn === 1 ? 2 : 1)); // Ahora usamos el nuevo starter
+      setRound(1); // Reiniciar el contador de rondas
+      setPhase(1);
+    }
+  };
 
   // Function to check if the game should transition to the attack phase
-  const checkIfisAttackPhase = () => {
+  const checkEndSelectDicePhase = () => {
     const playerOne = players[1]; // Reference to player one
     const playerTwo = players[2]; // Reference to player two
     // Check if both players have selected 6 dice or if 3 rounds have been completed
@@ -100,7 +138,7 @@ export const GameProvider = ({ children }) => {
       round === 3
     ) {
       reorderSelectedDice();
-      setIsAttackPhase(true); // Move to attack phase
+      endPhase();
     }
   };
 
@@ -119,7 +157,7 @@ export const GameProvider = ({ children }) => {
   };
 
   // Function to remove selected dice from a player's selection
-  const removeSelectedDice = (playerId, number,gold) => {
+  const removeSelectedDice = (playerId, number, gold) => {
     setPlayers((prevPlayers) => {
       const updatedPlayer = {
         ...prevPlayers[playerId],
@@ -127,6 +165,63 @@ export const GameProvider = ({ children }) => {
           // Compare both the dice number and gold status
           return d.number !== number || d.gold !== gold;
         }),
+      };
+      return { ...prevPlayers, [playerId]: updatedPlayer }; // Return updated players object
+    });
+  };
+
+  const reorderSelectedDice = () => {
+    setPlayers((prevPlayers) => {
+      const playerOneDiceSet = prevPlayers[1].selectedDice;
+      const playerTwoDiceSet = prevPlayers[2].selectedDice;
+
+      // Reordenar dependiendo de quién tiene el turno
+      const [reorderedPlayerOneDiceSet, reorderedPlayerTwoDiceSet] =
+        starter === 1
+          ? reorderDiceSets(playerOneDiceSet, playerTwoDiceSet)
+          : reorderDiceSets(playerTwoDiceSet, playerOneDiceSet);
+
+      // Actualizar el estado `selectedDice` en función de quién ataca primero
+      return {
+        ...prevPlayers,
+        1: {
+          ...prevPlayers[1],
+          selectedDice:
+            starter === 1
+              ? reorderedPlayerOneDiceSet
+              : reorderedPlayerTwoDiceSet,
+        },
+        2: {
+          ...prevPlayers[2],
+          selectedDice:
+            starter === 1
+              ? reorderedPlayerTwoDiceSet
+              : reorderedPlayerOneDiceSet,
+        },
+      };
+    });
+  };
+
+  // Function to apply damage to a player and check for victory
+  const takeDamage = (playerId, damage) => {
+    setPlayers((prevPlayers) => {
+      const updatedPlayer = {
+        ...prevPlayers[playerId],
+        health: Math.max(prevPlayers[playerId].health - damage, 0), // Reducing player health but not below 0
+      };
+      // Check if the player's health is zero or below to declare a winner
+      if (updatedPlayer.health === 0) {
+        setWhoWins(playerId === 1 ? "2" : "1"); // Set winner based on player ID
+      }
+      return { ...prevPlayers, [playerId]: updatedPlayer }; // Return updated players object
+    });
+  };
+
+  const healPlayer = (playerId, healAmount) => {
+    setPlayers((prevPlayers) => {
+      const updatedPlayer = {
+        ...prevPlayers[playerId],
+        health: Math.min(prevPlayers[playerId].health + healAmount, 15), // Increase health but not above 15
       };
       return { ...prevPlayers, [playerId]: updatedPlayer }; // Return updated players object
     });
@@ -145,13 +240,11 @@ export const GameProvider = ({ children }) => {
 
   // Function to steal coins from another player
   const stealCoins = (stealerId, targetId, amount) => {
-
     setPlayers((prevPlayers) => {
       // Verificamos los valores actuales antes de actualizar
 
       const targetPlayer = prevPlayers[targetId];
       const stealerPlayer = prevPlayers[stealerId];
-
 
       // Determina la cantidad real a robar (no puede exceder lo que tiene el objetivo)
       const coinsToSteal = Math.min(amount, targetPlayer.coin);
@@ -175,38 +268,25 @@ export const GameProvider = ({ children }) => {
     });
   };
 
-  const endAttackPhase = () => {
-    setPlayers((prevPlayers) => ({
-      ...prevPlayers,
-      1: {
-        ...prevPlayers[1],
-        selectedDice: [], // Restablece selectedDice de Player 1 a una lista vacía
-      },
-      2: {
-        ...prevPlayers[2],
-        selectedDice: [], // Restablece selectedDice de Player 2 a una lista vacía
-      },
-    }));
-    
-    // Cambia el starter al jugador contrario
-    setStarter((prevStarter) => (prevStarter === 1 ? 2 : 1));
-
-    // Aquí es donde actualizamos `turn` al nuevo valor de `starter`
-    setTurn((prevTurn) => (prevTurn === 1 ? 2 : 1)); // Ahora usamos el nuevo starter
-
-    setIsAttackPhase(false); // Termina la fase de ataque
-    setRound(1); // Reiniciar el contador de rondas
-
+  const selectGod = (playerId, godId) => {
+    setPlayers((prevPlayers) => {
+      const updatedPlayer = {
+        ...prevPlayers[playerId],
+        selectedGod: godId, // Assign the selected god's ID to the player
+      };
+      return { ...prevPlayers, [playerId]: updatedPlayer }; // Return updated players object
+    });
   };
 
   return (
     // Providing context values to children components
     <GameContext.Provider
       value={{
+        gameStarted,
+        startGame,
         players, // Current state of players
         turn, // Current player's turn
         turnsThisRound, // Number of turns taken in the current round
-        isAttackPhase, // Flag indicating if it's the attack phase
         round, // Current round number
         whoWins, // ID of the winning player
         takeDamage, // Function to apply damage to a player
@@ -215,7 +295,10 @@ export const GameProvider = ({ children }) => {
         removeSelectedDice, // Function to remove dice from a player's selection
         addCoins, // Function to add coins to a player's total
         stealCoins, // Function to steal coins from another player
-        endAttackPhase,
+        endPhase,
+        phase,
+        selectGod,
+        healPlayer,
       }}
     >
       {children}

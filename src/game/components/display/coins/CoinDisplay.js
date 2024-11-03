@@ -7,7 +7,7 @@ const CoinDisplay = ({coin}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.turnText}>
-        {coin}
+        Gold: {coin}
       </Text>
     </View>
   );
