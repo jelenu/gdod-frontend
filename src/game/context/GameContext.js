@@ -12,7 +12,7 @@ export const GameProvider = ({ children }) => {
     1: {
       id: 1,
       name: "Player 1",
-      health: 15,
+      health: 1,
       selectedDice: [],
       coin: 4,
       gods: [
