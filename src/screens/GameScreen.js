@@ -1,17 +1,15 @@
 // Importing React to use React features
-import React from 'react';
+import React from "react";
 // Importing necessary components and utilities from React Native
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ImageBackground } from "react-native";
 // Importing components for different phases of the game
-import SelectDicePhase from '../game/components/containers/SelectDicePhase';
-import AttackPhase from '../game/components/containers/AttackPhase';
-import TurnDisplay from '../game/components/display/turn/TurnDisplay';
-import HealthBar from '../game/components/display/health/HealthBar';
-// Importing the custom hook to access the game context
-import { useGameContext } from '../game/context/GameContext';
-import CoinDisplay from '../game/components/display/coins/CoinDisplay';
-import SelectGodsPhase from '../game/components/containers/SelectGodsPhase';
-import WinnerDisplay from '../game/components/display/winner/WinnerDisplay'; // Importar el nuevo componente
+import SelectDicePhase from "../game/components/containers/SelectDicePhase";
+import AttackPhase from "../game/components/containers/AttackPhase";
+import HealthBar from "../game/components/display/health/HealthBar";
+import { useGameContext } from "../game/context/GameContext";
+import CoinDisplay from "../game/components/display/coins/CoinDisplay";
+import SelectGodsPhase from "../game/components/containers/SelectGodsPhase";
+import WinnerDisplay from "../game/components/display/winner/WinnerDisplay"; // Importar el nuevo componente
 
 // GameScreen functional component representing the local gameplay mode
 const GameScreen = () => {
@@ -22,28 +20,48 @@ const GameScreen = () => {
   const playerOne = players[1]; // Assuming player index starts from 1
   const playerTwo = players[2]; // Assuming player index starts from 2
 
-  // Mostrar solo WinnerDisplay si alguien ha ganado
+  // Show WinnerDisplay if someone has won
   if (whoWins) {
     return <WinnerDisplay winnerId={whoWins} />;
   }
 
-  // Mostrar la interfaz normal si no hay un ganador aún
+  const backgroundImage = require("../../assets/background.png");
+
+  const backgroundImage2 = require("../../assets/background2.png");
+
+  // Show the normal interface if there is no winner yet
   return (
     <View style={styles.container}>
-      {phase === 1 && <TurnDisplay />}
-
-      <View style={styles.playerInfoContainer}>
-        <HealthBar player={playerTwo} />
-        <CoinDisplay coin={playerTwo.coin} />
+      <View style={styles.playerContainer}>
+        <ImageBackground
+          source={backgroundImage}
+          style={styles.backgroundImage}
+          resizeMode="stretch"
+        >
+          <View style={styles.playerInfoContainer}>
+            <HealthBar player={playerTwo} />
+            <CoinDisplay coin={playerTwo.coin} />
+          </View>
+        </ImageBackground>
       </View>
 
-      {phase === 1 && <SelectDicePhase />}
-      {phase === 2 && <SelectGodsPhase />}
-      {phase === 3 && <AttackPhase />}
+      <View style={styles.phaseContainer}>
+        {phase === 1 && <SelectDicePhase />}
+        {phase === 2 && <SelectGodsPhase />}
+        {phase === 3 && <AttackPhase />}
+      </View>
 
-      <View style={styles.playerInfoContainer}>
-        <CoinDisplay coin={playerOne.coin} />
-        <HealthBar player={playerOne} />
+      <View style={styles.playerContainer}>
+        <ImageBackground
+          source={backgroundImage2}
+          style={styles.backgroundImage}
+          resizeMode="stretch"
+        >
+          <View style={styles.playerInfoContainer}>
+            <HealthBar player={playerOne} />
+            <CoinDisplay coin={playerOne.coin} />
+          </View>
+        </ImageBackground>
       </View>
     </View>
   );
@@ -53,13 +71,29 @@ const GameScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1, // Takes up the full height of the screen
-    justifyContent: 'center', // Centers content vertically
-    alignItems: 'center', // Centers content horizontally
+    justifyContent: "space-between", // Distributes items between top and bottom
+    alignItems: "center", // Centers content horizontally
+    backgroundColor: "black",
   },
+  playerContainer: {
+    width: "100%", // Full width for the background image
+    height: "25%",
+  },
+
+  backgroundImage: {
+    width: "100%", // Full width for the background image
+    height: "100%",
+  },
+
   playerInfoContainer: {
-    flexDirection: 'row', // Aligns children in a row
-    alignItems: 'center', // Centers children vertically in the row
+    flexDirection: "row", // Aligns children in a row
+    alignItems: "center", // Centers children vertically in the row
     marginBottom: 10, // Adds some spacing below the player info
+  },
+  phaseContainer: {
+    width: "100%",
+    height: "50%",
+    alignItems: "center",
   },
 });
 

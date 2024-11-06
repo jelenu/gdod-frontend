@@ -1,5 +1,5 @@
 import React from 'react'; // Importing React library
-import { View, Text, StyleSheet } from 'react-native'; // Importing necessary components from React Native
+import { View, Text, StyleSheet , Dimensions} from 'react-native'; // Importing necessary components from React Native
 
 // TurnDisplay functional component to show the current player's turn and round
 const CoinDisplay = ({coin}) => {
@@ -13,14 +13,15 @@ const CoinDisplay = ({coin}) => {
   );
 };
 
+const { width } = Dimensions.get('window');
+
 // Styles for the component
 const styles = StyleSheet.create({
-  container: {
-    // Container styles can be added here if needed
-  },
+
   turnText: {
-    fontSize: 36, // Font size for the turn text
+    fontSize: width > 600 ? 28 : 20, // Cambiar el tamaño de la fuente basado en el ancho de la pantalla
     fontWeight: 'bold', // Making the text bold
+    color:"#cfcfcf",
   },
 });
 

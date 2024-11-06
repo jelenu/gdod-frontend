@@ -1,11 +1,11 @@
 // Importing necessary React and React Native modules
-import React, { useState, useEffect, startTransition } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState, useEffect, startTransition } from "react";
+import { View, StyleSheet } from "react-native";
 // Importing Dice component to represent individual dice
-import Dice from './Dice'; 
+import Dice from "./Dice";
 // Importing buttons for interacting with the dice
-import DiceButton from '../../controls/dice/DiceButton';
-import SelectDiceButton from '../../controls/dice/SelectDiceButton';
+import DiceButton from "../../controls/dice/DiceButton";
+import SelectDiceButton from "../../controls/dice/SelectDiceButton";
 import { useGameContext } from "../../../context/GameContext";
 
 // DiceSet functional component to manage a set of dice for a player
@@ -41,58 +41,83 @@ const DiceSet = ({ player, turn }) => {
   // Effect to initialize the dice array based on the player's selected dice
   useEffect(() => {
     const diceCount = 6 - player.selectedDice.length; // Calculate how many dice can still be rolled
-    if(diceCount === 0 && turn === player.id){
+    if (diceCount === 0 && turn === player.id) {
       endTurn();
-    }else{
+    } else {
       setInitialDiceArray([...Array(diceCount)]); // Create an array of the available dice
       setVisibleButton(true); // Reset the visibility of the spin button
       setSelectDiceButtonVisible(false); // Reset the visibility of the select button
     }
-    
   }, [turn]); // Re-run this effect when the turn changes
 
   return (
-    <View>
+    <View style={styles.container}>
       {/* Container for the action buttons */}
+      {player.id === 2 && (
+
       <View style={styles.buttonContainer}>
         {/* Display the Spin button for player 2 */}
-        {turn === 2 && turn === player.id && visibleButton && <DiceButton onPress={startSpin} />}
+        {turn === 2 && turn === player.id && visibleButton && (
+          <DiceButton onPress={startSpin} />
+        )}
         {/* Display the Select Dice button for player 2 */}
-        {turn === 2 && turn === player.id && selectDiceButtonVisible && <SelectDiceButton setSelectable={setSelectable} />}
+        {turn === 2 && turn === player.id && selectDiceButtonVisible && (
+          <SelectDiceButton setSelectable={setSelectable} />
+        )}
       </View>
-
+      )}
       {/* Container for the dice */}
       <View style={styles.diceContainer}>
         {initialDiceArray.map((_, index) => (
           // Render a Dice component for each available die
-          <Dice key={index} spinning={isSpinning} selectable={selectable} playerId={player.id} turn={turn} />
+          <Dice
+            key={index}
+            spinning={isSpinning}
+            selectable={selectable}
+            playerId={player.id}
+            turn={turn}
+          />
         ))}
       </View>
 
       {/* Container for the action buttons */}
-      <View style={styles.buttonContainer}>
-        {/* Display the Spin button for player 1 */}
-        {turn === 1 && turn === player.id && visibleButton && <DiceButton onPress={startSpin} />}
-        {/* Display the Select Dice button for player 1 */}
-        {turn === 1 && turn === player.id && selectDiceButtonVisible && <SelectDiceButton setSelectable={setSelectable} />}
-      </View>
+      {player.id === 1 && (
+        <View style={styles.buttonContainer}>
+          {/* Display the Spin button for player 1 */}
+          {turn === 1 && turn === player.id && visibleButton && (
+            <DiceButton onPress={startSpin} />
+          )}
+          {/* Display the Select Dice button for player 1 */}
+          {turn === 1 && turn === player.id && selectDiceButtonVisible && (
+            <SelectDiceButton setSelectable={setSelectable} />
+          )}
+        </View>
+      )}
     </View>
   );
 };
 
 // Styles for the DiceSet component using StyleSheet
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "space-between", // Distribuye el espacio entre los elementos
+    alignItems: "center", // Centrar verticalmente
+    width: "100%",
+  },
   buttonContainer: {
-    flexDirection: 'row', // Arrange buttons in a row
-    justifyContent: 'center', // Center the buttons horizontally
-    marginBottom: 10, // Add space between buttons and dice
+    justifyContent: "center", // Centra los botones horizontalmente
+    alignItems: "center", // Centra los botones verticalmente
+    height: "30%",
   },
   diceContainer: {
-    flexDirection: 'row', // Arrange dice in a row
-    flexWrap: 'wrap', // Allow dice to wrap to the next line if they overflow
-    justifyContent: 'center', // Center the dice horizontally
-    width: '100%', // Ensure the container takes the full width
+    flexDirection: "row",
+    width: "100%",
+    height: "70%",
   },
+  
+
+  
 });
 
 // Exporting the DiceSet component for use in other parts of the application

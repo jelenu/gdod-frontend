@@ -1,6 +1,6 @@
 // Importing necessary React and React Native modules
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 
 // Importing the custom hook to access the game context
 import { useGameContext } from '../../context/GameContext';
@@ -34,12 +34,16 @@ const SelectDicePhase = () => {
   );
 };
 
+const screenWidth = Dimensions.get('window').width;
+
 // Styles for the SelectDicePhase component using StyleSheet
 const styles = StyleSheet.create({
   container: {
     flex: 1, // Takes up the full height of the screen
     justifyContent: 'center', // Centers content vertically
     alignItems: 'center', // Centers content horizontally
+
+    width: screenWidth > 600 ? "40%": "100%",
   },
 });
 

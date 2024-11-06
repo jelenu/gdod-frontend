@@ -8,17 +8,19 @@ const DiceButton = ({ onPress }) => {
     // Pressable component that triggers the onPress function when pressed
     <Pressable onPress={onPress} style={styles.button}>
       {/* Displaying the button text */}
-      <Text style={styles.buttonText}>Girar dado</Text>
+      <Text style={styles.buttonText}>Roll Dice</Text>
     </Pressable>
   );
 };
 
+
+
 // Styles for the DiceButton component using StyleSheet
 const styles = StyleSheet.create({
   button: {
-    marginBottom: 10, // Margin below the button for spacing
-    padding: 10, // Padding inside the button
-    backgroundColor: '#2196F3', // Background color of the button
+    paddingVertical: 5, // Padding inside the button
+    paddingHorizontal: 10,
+    backgroundColor: '#efb910', // Background color of the button
     borderRadius: 5, // Rounded corners for the button
   },
   buttonText: {

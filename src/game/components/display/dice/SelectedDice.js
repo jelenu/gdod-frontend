@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Dimensions } from "react-native";
 
 const SelectedDice = ({ player, turn }) => {
   const [selectedDice, setSelectedDice] = useState(player.selectedDice); // State to store selected dice
@@ -51,17 +51,20 @@ const SelectedDice = ({ player, turn }) => {
     </View>
   );
 };
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row", // Arrange dice in a row
+    minHeight: 90,
+    justifyContent: "center", // Centra los botones horizontalmente
+    alignItems: "center", // Centra los botones verticalmente
+
   },
   image: {
     margin: 5,
-    width: 60,
-    height: 60,
+    width: width > 600 ? 70:50,
+    height:  width > 600 ? 70:50,
   },
 });
 

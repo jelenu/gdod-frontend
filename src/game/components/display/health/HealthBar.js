@@ -1,39 +1,27 @@
 import React from "react"; // Importing React
-import { View, Text, StyleSheet } from "react-native"; // Importing necessary components from React Native
+import { View, Text, StyleSheet, Dimensions } from "react-native"; // Importing necessary components from React Native
 
 // HealthBar functional component to display player's health
 const HealthBar = ({ player }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.healthBar}>
-        <View
-          style={[styles.health, { width: `${(player.health / 15) * 100}%` }]} 
-        />
-      </View>
-      <Text>{player.health} / 15</Text>
+      <Text style={styles.text}>Health: {player.health} / 15</Text>
     </View>
   );
 };
 
+const { width } = Dimensions.get('window');
+
 // Styles for the component
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 10, // Space below the health bar
-    alignItems: "center", // Centering items horizontally
-    justifyContent: "center", // Centering items vertically
-    height: 100, // Setting a fixed height to enable vertical centering
+  container:{
+    marginRight: "20px"
   },
-  healthBar: {
-    width: 150, // Fixed width of the health bar
-    height: 20, // Fixed height of the health bar
-    backgroundColor: "#ccc", // Light grey background for the health bar
-    borderRadius: 10, // Rounded corners
-    overflow: "hidden", // Ensuring inner health bar doesn't overflow
-  },
-  health: {
-    height: "100%", // Full height of the health bar
-    backgroundColor: "#4CAF50", // Green color for the health fill
-  },
+  text:{
+    fontSize: width > 600 ? 28 : 20, // Cambiar el tamaño de la fuente basado en el ancho de la pantalla
+    fontWeight: 'bold', // Making the text bold
+    color:"#cfcfcf",
+  }
 });
 
 // Exporting the HealthBar component for use in other parts of the application

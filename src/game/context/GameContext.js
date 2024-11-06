@@ -12,9 +12,9 @@ export const GameProvider = ({ children }) => {
     1: {
       id: 1,
       name: "Player 1",
-      health: 1,
+      health: 15,
       selectedDice: [],
-      coin: 4,
+      coin: 0,
       gods: [
         {
           id: 1,
@@ -41,7 +41,7 @@ export const GameProvider = ({ children }) => {
       name: "Player 2",
       health: 15,
       selectedDice: [],
-      coin: 4,
+      coin: 0,
       gods: [
         {
           id: 1,
