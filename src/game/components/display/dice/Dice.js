@@ -1,6 +1,6 @@
 // Importing necessary React and React Native modules
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
 // Importing Canvas and related controls from Three.js and React Three Fiber
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
@@ -84,7 +84,6 @@ const Dice = ({ spinning, selectable, playerId, turn }) => {
     </Canvas>
   );
 };
-const { width } = Dimensions.get('window');
 
 // Styles for the Dice component using StyleSheet
 const styles = StyleSheet.create({

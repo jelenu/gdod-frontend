@@ -1,7 +1,7 @@
 // Importing React to use React features
 import React from "react";
 // Importing necessary components and utilities from React Native
-import { View, StyleSheet, ImageBackground } from "react-native";
+import { View, StyleSheet, ImageBackground, Dimensions } from "react-native";
 // Importing components for different phases of the game
 import SelectDicePhase from "../game/components/containers/SelectDicePhase";
 import AttackPhase from "../game/components/containers/AttackPhase";
@@ -66,6 +66,7 @@ const GameScreen = () => {
     </View>
   );
 };
+const screenHeight = Dimensions.get('window').height;
 
 // Styles for the GameScreen component using StyleSheet
 const styles = StyleSheet.create({
@@ -77,8 +78,8 @@ const styles = StyleSheet.create({
   },
   playerContainer: {
     width: "100%", // Full width for the background image
-    height: "25%",
-  },
+    height: screenHeight > 900 ? "25%": "30%",
+    },
 
   backgroundImage: {
     width: "100%", // Full width for the background image
@@ -88,11 +89,12 @@ const styles = StyleSheet.create({
   playerInfoContainer: {
     flexDirection: "row", // Aligns children in a row
     alignItems: "center", // Centers children vertically in the row
-    marginBottom: 10, // Adds some spacing below the player info
+    justifyContent: "space-between", // Distributes items between top and bottom
+
   },
   phaseContainer: {
     width: "100%",
-    height: "50%",
+    height: screenHeight > 900 ? "50%": "40%",
     alignItems: "center",
   },
 });

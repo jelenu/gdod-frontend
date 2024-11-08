@@ -15,7 +15,8 @@ const { width } = Dimensions.get('window');
 // Styles for the component
 const styles = StyleSheet.create({
   container:{
-    marginRight: "20px"
+    width: "40%",
+    alignItems: "center"
   },
   text:{
     fontSize: width > 600 ? 28 : 20, // Cambiar el tamaño de la fuente basado en el ancho de la pantalla

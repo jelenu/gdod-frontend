@@ -51,12 +51,12 @@ const SelectedDice = ({ player, turn }) => {
     </View>
   );
 };
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row", // Arrange dice in a row
-    minHeight: 90,
+    width: "100%",
     justifyContent: "center", // Centra los botones horizontalmente
     alignItems: "center", // Centra los botones verticalmente
 
