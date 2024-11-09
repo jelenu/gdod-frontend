@@ -1,29 +1,61 @@
-import React from "react"; // Importing React
-import { View, Text, StyleSheet, Dimensions } from "react-native"; // Importing necessary components from React Native
+import React from "react";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 
-// HealthBar functional component to display player's health
 const HealthBar = ({ player }) => {
+  const healthPercentage = (player.health / 15) * 100; // Porcentaje de salud actual
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Health: {player.health} / 15</Text>
+      <View style={styles.barContainer}>
+        <View
+          style={[
+            styles.healthBar,
+            {
+              width: `${healthPercentage}%`,
+              backgroundColor:
+                healthPercentage > 50 ? "#4caf50" : healthPercentage > 20 ? "#ffeb3b" : "#f44336",
+            },
+          ]}
+        />
+        <Text style={styles.text}>Health: {player.health} / 15</Text>
+      </View>
     </View>
   );
 };
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
-// Styles for the component
+// Estilos para el componente
 const styles = StyleSheet.create({
-  container:{
+  container: {
     width: "40%",
-    alignItems: "center"
+    marginTop: 40,
+    marginLeft: 15,
+    alignItems: "center",
   },
-  text:{
-    fontSize: width > 600 ? 28 : 20, // Cambiar el tamaño de la fuente basado en el ancho de la pantalla
-    fontWeight: 'bold', // Making the text bold
-    color:"#cfcfcf",
-  }
+  barContainer: {
+    width: "100%",
+    height: 20,
+    backgroundColor: "#555",
+    borderRadius: 10,
+    overflow: "hidden",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  healthBar: {
+    height: "100%",
+    borderRadius: 10,
+    position: "absolute",
+    left: 0,
+    top: 0,
+  },
+  text: {
+    fontSize: width > 600 ? 18 : 14,
+    fontWeight: "bold",
+    color: "#fff",
+    zIndex: 1, // Asegura que el texto esté encima de la barra de salud
+  },
 });
 
-// Exporting the HealthBar component for use in other parts of the application
 export default HealthBar;

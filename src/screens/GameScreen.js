@@ -1,35 +1,25 @@
-// Importing React to use React features
 import React from "react";
-// Importing necessary components and utilities from React Native
 import { View, StyleSheet, ImageBackground, Dimensions } from "react-native";
-// Importing components for different phases of the game
 import SelectDicePhase from "../game/components/containers/SelectDicePhase";
 import AttackPhase from "../game/components/containers/AttackPhase";
 import HealthBar from "../game/components/display/health/HealthBar";
 import { useGameContext } from "../game/context/GameContext";
 import CoinDisplay from "../game/components/display/coins/CoinDisplay";
 import SelectGodsPhase from "../game/components/containers/SelectGodsPhase";
-import WinnerDisplay from "../game/components/display/winner/WinnerDisplay"; // Importar el nuevo componente
+import WinnerDisplay from "../game/components/display/winner/WinnerDisplay";
 
-// GameScreen functional component representing the local gameplay mode
 const GameScreen = () => {
-  // Accessing game context values: phase, players, and whoWins
   const { phase, players, whoWins } = useGameContext();
+  const playerOne = players[1];
+  const playerTwo = players[2];
 
-  // Extracting player one and player two from the players array
-  const playerOne = players[1]; // Assuming player index starts from 1
-  const playerTwo = players[2]; // Assuming player index starts from 2
-
-  // Show WinnerDisplay if someone has won
   if (whoWins) {
     return <WinnerDisplay winnerId={whoWins} />;
   }
 
   const backgroundImage = require("../../assets/background.png");
-
   const backgroundImage2 = require("../../assets/background2.png");
 
-  // Show the normal interface if there is no winner yet
   return (
     <View style={styles.container}>
       <View style={styles.playerContainer}>
@@ -66,38 +56,38 @@ const GameScreen = () => {
     </View>
   );
 };
+
 const screenHeight = Dimensions.get('window').height;
 
-// Styles for the GameScreen component using StyleSheet
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Takes up the full height of the screen
-    justifyContent: "space-between", // Distributes items between top and bottom
-    alignItems: "center", // Centers content horizontally
+    flex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
     backgroundColor: "black",
   },
   playerContainer: {
-    width: "100%", // Full width for the background image
-    height: screenHeight > 900 ? "25%": "30%",
-    },
-
+    width: "100%",
+    height: screenHeight > 900 ? "25%" : "30%",
+    position: "relative", // Para que los elementos absolutos dentro puedan posicionarse con referencia al contenedor
+  },
   backgroundImage: {
-    width: "100%", // Full width for the background image
+    width: "100%",
     height: "100%",
   },
-
   playerInfoContainer: {
-    flexDirection: "row", // Aligns children in a row
-    alignItems: "center", // Centers children vertically in the row
-    justifyContent: "space-between", // Distributes items between top and bottom
-
+    position: "absolute",
+    bottom: 0, // Coloca el contenedor al fondo de playerContainer
+    height: "80%", // Hace que ocupe el 80% de la altura de playerContainer
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   phaseContainer: {
     width: "100%",
-    height: screenHeight > 900 ? "50%": "40%",
+    height: screenHeight > 900 ? "50%" : "40%",
     alignItems: "center",
   },
 });
 
-// Exporting the GameScreen component to be used in other parts of the app
 export default GameScreen;
